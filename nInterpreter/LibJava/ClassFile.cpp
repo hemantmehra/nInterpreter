@@ -35,14 +35,18 @@ namespace JVM
 
 	uint16_t ClassFile::next_uint16_t()
 	{
-		uint8_t val = make_uint16_t(m_bytes[m_byte_pos], m_bytes[m_byte_pos + 1]);
+		uint16_t val = make_uint16_t(m_bytes[m_byte_pos], m_bytes[m_byte_pos + 1]);
 		m_byte_pos += 2;
 		return val;
 	}
 
 	uint32_t ClassFile::next_uint32_t()
 	{
-		uint8_t val = make_uint32_t(m_bytes[m_byte_pos], m_bytes[m_byte_pos + 1], m_bytes[m_byte_pos + 2], m_bytes[m_byte_pos + 3]);
+		uint8_t a = m_bytes[m_byte_pos];
+		uint8_t b = m_bytes[m_byte_pos + 1];
+		uint8_t c = m_bytes[m_byte_pos + 2];
+		uint8_t d = m_bytes[m_byte_pos + 3];
+		uint32_t val = make_uint32_t(a, b, c, d);
 		m_byte_pos += 4;
 		return val;
 	}
@@ -70,9 +74,11 @@ namespace JVM
 		constant_pool_count = next_uint16_t();
 		printf("constant_pool_count: %d\n", constant_pool_count);
 
-		for (size_t c = 0; c < constant_pool_count; c++) {
+		for (size_t c = 0; c < constant_pool_count - 1; c++) {
 			cp_info _cp_info;
 			uint8_t tag = next_uint8_t();
+			_cp_info.tag = tag;
+
 			CONSTANT_POOL_TAG pool_tag = (CONSTANT_POOL_TAG)tag;
 			printf("tag: %d -> %s	\n", tag, CONSTANT_POOL_TAG_STRING((CONSTANT_POOL_TAG)pool_tag));
 			
@@ -80,8 +86,7 @@ namespace JVM
 			{
 			case CONSTANT_POOL_TAG::CONSTANT_Utf8:
 			{
-				_cp_info.tag = tag;
-				size_t length = next_uint16_t();
+				uint16_t length = next_uint16_t();
 				_cp_info.info.CONSTANT_Utf8_info.length = length;
 				_cp_info.info.CONSTANT_Utf8_info.bytes = new uint8_t[length];
 				copy_next_bytes(_cp_info.info.CONSTANT_Utf8_info.bytes, &m_bytes[m_byte_pos], length);
@@ -97,7 +102,6 @@ namespace JVM
 				TODO();
 			case CONSTANT_POOL_TAG::CONSTANT_Class:
 			{
-				_cp_info.tag = tag;
 				_cp_info.info.CONSTANT_Class_info.name_index = next_uint16_t();
 				break;
 			}
@@ -107,7 +111,6 @@ namespace JVM
 				TODO();
 			case CONSTANT_POOL_TAG::CONSTANT_Methodref:
 			{
-				_cp_info.tag = tag;
 				_cp_info.info.CONSTANT_Methodref_info.class_index = next_uint16_t();
 				_cp_info.info.CONSTANT_Methodref_info.name_and_type_index = next_uint16_t();
 				break;
@@ -115,7 +118,11 @@ namespace JVM
 			case CONSTANT_POOL_TAG::CONSTANT_InterfaceMethodref:
 				TODO();
 			case CONSTANT_POOL_TAG::CONSTANT_NameAndType:
-				TODO();
+			{
+				_cp_info.info.CONSTANT_NameAndType_info.name_index = next_uint16_t();
+				_cp_info.info.CONSTANT_NameAndType_info.descriptor_index = next_uint16_t();
+				break;
+			}
 			case CONSTANT_POOL_TAG::CONSTANT_MethodHandle:
 				TODO();
 			case CONSTANT_POOL_TAG::CONSTANT_MethodType:
