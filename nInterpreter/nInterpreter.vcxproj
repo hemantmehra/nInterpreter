@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CL\Stack.cpp" />
+    <ClCompile Include="LibJava\ClassFile.cpp" />
     <ClCompile Include="LibJava\Interpreter.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
@@ -149,6 +150,8 @@
     <ClInclude Include="CL\Assert.h" />
     <ClInclude Include="CL\Print.h" />
     <ClInclude Include="CL\Stack.h" />
+    <ClInclude Include="LibJava\ClassFile.h" />
+    <ClInclude Include="LibJava\ConstantPool.h" />
     <ClInclude Include="LibJVM\ByteCode.h" />
     <ClInclude Include="LibJVM\Interpreter.h" />
   </ItemGroup>

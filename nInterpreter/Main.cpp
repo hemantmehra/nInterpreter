@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include "LibJava/ByteCode.h"
+#include "LibJava/ClassFile.h"
 #include "LibJava/Interpreter.h"
+#include <fstream>
+#include <iostream>
+
+#define BUFFERSIZE 4096
 
 int main()
 {
@@ -25,16 +30,22 @@ int main()
 
 	JVM::Interpreter interpreter = JVM::Interpreter(bytes, 16);
 
-	while (true)
-	{
-		JVM::ByteCode bytecode = interpreter.next_exec();
-		/*printf("%s\n", JVM::ByteCodeString(bytecode));*/
+	//while (true)
+	//{
+	//	JVM::ByteCode bytecode = interpreter.next_exec();
+	//	/*printf("%s\n", JVM::ByteCodeString(bytecode));*/
 
-		if (bytecode == JVM::ByteCode::_ireturn) {
-			printf("RESULT: %d\n", interpreter.get_last_val());
-			break;
-		}
-	}
+	//	if (bytecode == JVM::ByteCode::_ireturn) {
+	//		printf("RESULT: %d\n", interpreter.get_last_val());
+	//		break;
+	//	}
+	//}
+
+	uint8_t buffer[BUFFERSIZE];
+	std::ifstream fin("test_code\\Hello.class", std::ios::in | std::ios::binary);
+	fin.read((char *) buffer, BUFFERSIZE);
+
+	JVM::ClassFile classFile(buffer);
 
 	return 0;
 }
