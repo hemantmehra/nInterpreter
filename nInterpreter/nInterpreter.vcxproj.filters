@@ -18,10 +18,10 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LibJVM\Interpreter.cpp">
+    <ClCompile Include="CL\Stack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CL\Stack.cpp">
+    <ClCompile Include="LibJava\Interpreter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

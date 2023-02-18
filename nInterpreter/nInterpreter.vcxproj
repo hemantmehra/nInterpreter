@@ -142,7 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CL\Stack.cpp" />
-    <ClCompile Include="LibJVM\Interpreter.cpp" />
+    <ClCompile Include="LibJava\Interpreter.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>

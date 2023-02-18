@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "LibJVM/ByteCode.h"
-#include "LibJVM/Interpreter.h"
+#include "LibJava/ByteCode.h"
+#include "LibJava/Interpreter.h"
 
 int main()
 {
