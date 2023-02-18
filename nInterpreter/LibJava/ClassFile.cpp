@@ -142,9 +142,25 @@ namespace JVM
 			constant_pool.push_back(_cp_info);
 		}
 
-		//access_flags = make_uint16_t(buffer[i], buffer[i + 1]);
-		//i += 2;
-		//printf("access_flags: %04x\n", access_flags);
+		access_flags = next_uint16_t();
+		printf("access_flags: %04x\n", access_flags);
+
+		this_class = next_uint16_t();
+		printf("this_class: %d\n", this_class);
+
+		super_class = next_uint16_t();
+		printf("super_class: %d\n", super_class);
+
+		interfaces_count = next_uint16_t();
+		printf("interfaces_count: %d\n", interfaces_count);
+
+		// interfaces
+
+		fields_count = next_uint16_t();
+		printf("fields_count: %d\n", fields_count);
+
+		methods_count = next_uint16_t();
+		printf("methods_count: %d\n", methods_count);
 	}
 
 	ClassFile::~ClassFile()

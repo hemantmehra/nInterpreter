@@ -32,9 +32,6 @@
     <ClInclude Include="CL\Assert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LibJVM\ByteCode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CL\Print.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LibJava\ConstantPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LibJava\ByteCode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
