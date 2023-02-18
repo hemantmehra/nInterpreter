@@ -24,6 +24,8 @@ namespace JVM
 		m_pc = 0;
 		m_last_val = 0;
 		memcpy(m_program, bytes, length);
+		m_program_size = length;
+		memset(m_localVars, 0, JVM_MAX_LOCAL_VARS);
 	}
 
 	Interpreter::~Interpreter()
@@ -38,6 +40,11 @@ namespace JVM
 	int8_t Interpreter::get_last_val()
 	{
 		return m_last_val;
+	}
+
+	void Interpreter::PrintProgram()
+	{
+		TODO();
 	}
 
 	ByteCode Interpreter::next_exec()
@@ -87,7 +94,7 @@ namespace JVM
 		case ByteCode::_bipush:
 		{
 			int8_t val = (int8_t)next_byte();
-			m_stack.push(val);
+			m_op_stack.push(val);
 			break;
 		}
 			ASSERT_NOT_REACHED();
@@ -222,7 +229,12 @@ namespace JVM
 		case ByteCode::_getstatic:
 			ASSERT_NOT_REACHED();
 		case ByteCode::_goto:
-			ASSERT_NOT_REACHED();
+		{
+			uint8_t branchbyte1 = next_byte();
+			uint8_t branchbyte2 = next_byte();
+			m_pc = (branchbyte1 << 8) | branchbyte2;
+			break;
+		}
 		case ByteCode::_goto_w:
 			ASSERT_NOT_REACHED();
 		case ByteCode::_i2b:
@@ -246,19 +258,25 @@ namespace JVM
 		case ByteCode::_iastore:
 			ASSERT_NOT_REACHED();
 		case ByteCode::_iconst_m1:
-			ASSERT_NOT_REACHED();
+		{
+			m_op_stack.push(-1);
+			break;
+		}
 		case ByteCode::_iconst_0:
 		{
-			m_stack.push(0);
+			m_op_stack.push(0);
 			break;
 		}
 		case ByteCode::_iconst_1:
 		{
-			m_stack.push(1);
+			m_op_stack.push(1);
 			break;
 		}
 		case ByteCode::_iconst_2:
-			ASSERT_NOT_REACHED();
+		{
+			m_op_stack.push(2);
+			break;
+		}
 		case ByteCode::_iconst_3:
 			ASSERT_NOT_REACHED();
 		case ByteCode::_iconst_4:
@@ -280,7 +298,19 @@ namespace JVM
 		case ByteCode::_if_icmple:
 			ASSERT_NOT_REACHED();
 		case ByteCode::_if_icmplt:
-			ASSERT_NOT_REACHED();
+		{
+			uint8_t branchbyte1 = next_byte();
+			uint8_t branchbyte2 = next_byte();
+
+			int value2 = m_op_stack.pop();
+			int value1 = m_op_stack.pop();
+
+			if (value1 < value2) {
+				m_pc = (branchbyte1 << 8) | branchbyte2;
+			}
+
+			break;
+		}
 		case ByteCode::_if_icmpne:
 			ASSERT_NOT_REACHED();
 		case ByteCode::_ifeq:
@@ -313,7 +343,7 @@ namespace JVM
 			ASSERT_NOT_REACHED();
 		case ByteCode::_iload_1:
 		{
-			m_stack.push(m_localVars[1]);
+			m_op_stack.push(m_localVars[1]);
 			break;
 		}
 			ASSERT_NOT_REACHED();
@@ -347,7 +377,7 @@ namespace JVM
 			ASSERT_NOT_REACHED();
 		case ByteCode::_ireturn:
 		{
-			m_last_val = m_stack.pop();
+			m_last_val = m_op_stack.pop();
 			break;
 		}
 			ASSERT_NOT_REACHED();
@@ -361,7 +391,7 @@ namespace JVM
 			ASSERT_NOT_REACHED();
 		case ByteCode::_istore_1:
 		{
-			m_localVars[1] = m_stack.pop();
+			m_localVars[1] = m_op_stack.pop();
 			break;
 		}
 			ASSERT_NOT_REACHED();
