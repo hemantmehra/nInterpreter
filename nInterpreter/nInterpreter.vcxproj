@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CL\Print.cpp" />
     <ClCompile Include="CL\Stack.cpp" />
     <ClCompile Include="LibJava\ClassFile.cpp" />
     <ClCompile Include="LibJava\Interpreter.cpp" />

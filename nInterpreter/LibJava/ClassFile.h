@@ -22,11 +22,12 @@ namespace JVM
     };
 
     class method_info {
-        uint16_t         access_flags;
-        uint16_t         name_index;
-        uint16_t         descriptor_index;
-        uint16_t         attributes_count;
-        attribute_info*  attributes; // len: attributes_count
+    public:
+        uint16_t                    access_flags;
+        uint16_t                    name_index;
+        uint16_t                    descriptor_index;
+        uint16_t                    attributes_count;
+        std::vector<attribute_info> attributes; // len: attributes_count
     };
 
     class ClassFile {
@@ -44,9 +45,9 @@ namespace JVM
         uint16_t                    fields_count;
         field_info*                 fields;       // len: fields_count
         uint16_t                    methods_count;
-        method_info*                methods;      // len: methods_count
+        std::vector<method_info>    methods;      // len: methods_count
         uint16_t                    attributes_count;
-        attribute_info*             attributes;   // len: attributes_count
+        std::vector<attribute_info> attributes;   // len: attributes_count
 
         ClassFile(uint8_t* buffer);
         ~ClassFile();

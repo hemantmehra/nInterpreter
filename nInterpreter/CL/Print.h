@@ -3,5 +3,5 @@
 
 namespace CL
 {
-	
+	void PrintStringWithLength(char* str, size_t length);
 }

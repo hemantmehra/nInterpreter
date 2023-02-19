@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "../CL/Assert.h"
+#include "../CL/Print.h"
 #include "ClassFile.h"
 
 namespace JVM
@@ -74,13 +75,13 @@ namespace JVM
 		constant_pool_count = next_uint16_t();
 		printf("constant_pool_count: %d\n", constant_pool_count);
 
-		for (size_t c = 0; c < constant_pool_count - 1; c++) {
+		for (size_t c = 1; c < constant_pool_count; c++) {
 			cp_info _cp_info;
 			uint8_t tag = next_uint8_t();
 			_cp_info.tag = tag;
 
 			CONSTANT_POOL_TAG pool_tag = (CONSTANT_POOL_TAG)tag;
-			printf("tag: %d -> %s	\n", tag, CONSTANT_POOL_TAG_STRING((CONSTANT_POOL_TAG)pool_tag));
+			printf("    [%d] tag: %d -> %s	\n", c, tag, CONSTANT_POOL_TAG_STRING((CONSTANT_POOL_TAG)pool_tag));
 			
 			switch (pool_tag)
 			{
@@ -90,6 +91,10 @@ namespace JVM
 				_cp_info.info.CONSTANT_Utf8_info.length = length;
 				_cp_info.info.CONSTANT_Utf8_info.bytes = new uint8_t[length];
 				copy_next_bytes(_cp_info.info.CONSTANT_Utf8_info.bytes, &m_bytes[m_byte_pos], length);
+
+				printf("    -> ");
+				CL::PrintStringWithLength((char *) _cp_info.info.CONSTANT_Utf8_info.bytes, _cp_info.info.CONSTANT_Utf8_info.length);
+				printf("\n");
 				break;
 			}
 			case CONSTANT_POOL_TAG::CONSTANT_Integer:
@@ -159,8 +164,56 @@ namespace JVM
 		fields_count = next_uint16_t();
 		printf("fields_count: %d\n", fields_count);
 
+		// fields
+
 		methods_count = next_uint16_t();
 		printf("methods_count: %d\n", methods_count);
+
+		for (size_t c = 0; c < methods_count; c++) {
+			method_info _method_info;
+			_method_info.access_flags = next_uint16_t();
+			printf("    access_flags: %d\n", _method_info.access_flags);
+
+			_method_info.name_index = next_uint16_t();
+			printf("    name_index: %d", _method_info.name_index);
+
+			_method_info.descriptor_index = next_uint16_t();
+			printf("    descriptor_index: %d\n", _method_info.descriptor_index);
+
+			_method_info.attributes_count = next_uint16_t();
+			printf("    attributes_count: %d\n", _method_info.attributes_count);
+
+			for (size_t d = 0; d < _method_info.attributes_count; d++) {
+				attribute_info _attribute_info;
+				_attribute_info.attribute_name_index = next_uint16_t();
+				printf("        attribute_name_index: %d\n", _attribute_info.attribute_name_index);
+
+				_attribute_info.attribute_length = next_uint32_t();
+				printf("        attribute_length: %d\n", _attribute_info.attribute_length);
+				
+				char tmp[1024];
+				copy_next_bytes(tmp, m_bytes, _attribute_info.attribute_length);
+				_method_info.attributes.push_back(_attribute_info);
+			}
+
+			methods.push_back(_method_info);
+			printf("    --------------\n");
+		}
+
+		attributes_count = next_uint16_t();
+		printf("attributes_count: %d\n", attributes_count);
+
+		for (size_t c = 0; c < attributes_count; c++) {
+			attribute_info _attribute_info;
+			_attribute_info.attribute_name_index = next_uint16_t();
+			printf("    attribute_name_index: %d\n", _attribute_info.attribute_name_index);
+
+			_attribute_info.attribute_length = next_uint32_t();
+			printf("    attribute_length: %d\n", _attribute_info.attribute_length);
+
+			char tmp[1024];
+			copy_next_bytes(tmp, m_bytes, _attribute_info.attribute_length);
+		}
 	}
 
 	ClassFile::~ClassFile()
